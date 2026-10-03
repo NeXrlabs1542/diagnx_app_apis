@@ -55,3 +55,12 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+# DiagnX API
+appsettings.Local.json
+*.env
+publish/
+TestResults/
+Backup*/
+UpgradeLog*.htm
+.claude/

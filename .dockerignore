@@ -1,0 +1,8 @@
+**/bin/
+**/obj/
+**/.vs/
+**/.vscode/
+**/appsettings.Local.json
+tests/
+.git/
+*.md

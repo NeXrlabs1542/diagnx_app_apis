@@ -1,0 +1,38 @@
+# Render Blueprint — creates the API web service + a PostgreSQL database.
+# Render dashboard → New → Blueprint → pick this repo. Region: Singapore is closest to India.
+databases:
+  - name: diagnx-db
+    databaseName: diagnx
+    user: diagnx
+    plan: free            # free Postgres expires after 30 days — switch to basic-256mb for anything real
+    region: singapore
+    postgresMajorVersion: "16"
+
+services:
+  - type: web
+    name: diagnx-api
+    runtime: docker
+    plan: free            # free instances sleep after 15 min idle (first request then takes ~1 min)
+    region: singapore
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: diagnx-db
+          property: connectionString
+      - key: Security__MasterKey
+        generateValue: true   # NEVER change after data exists: it encrypts Aadhaar / bank numbers
+      - key: Admin__Email
+        sync: false           # you enter it in the dashboard on first deploy
+      - key: Admin__Password
+        sync: false
+      - key: Otp__DevMode
+        value: "true"         # set "false" once a real SMS provider is wired
+      - key: Otp__MaxSendsPerIpPerHour
+        value: "300"          # dev team shares one office IP; remove (default 20) for production
+      - key: Seed__DemoData
+        value: "true"         # demo labs / tests / prices for app development
+      - key: Swagger__Enabled
+        value: "true"
